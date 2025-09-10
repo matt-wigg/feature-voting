@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  user
+  admin
+}
+
+enum FeatureStatus {
+  open
+  planned
+  in_progress
+  done
+  archived
+}
+
+model User {
+  id       String    @id @default(cuid())
+  email    String    @unique
+  name     String?
+  role     Role      @default(user)
+  features Feature[]
+  votes    Vote[]
+}
+
+model Feature {
+  id          String        @id @default(cuid())
+  title       String
+  description String
+  status      FeatureStatus @default(open)
+
+  authorId String?
+  author   User?         @relation(fields: [authorId], references: [id])
+
+  votes     Vote[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model Vote {
+  userId    String
+  featureId String
+
+  user    User    @relation(fields: [userId], references: [id])
+  feature Feature @relation(fields: [featureId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@id([userId, featureId])
+  @@index([featureId])
+}
