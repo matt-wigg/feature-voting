@@ -19,7 +19,7 @@ export default function MarketingPage() {
             </Button>
           </a>
           <a
-            href="https://github.com"
+            href="https://github.com/matt-wigg/feature-voting"
             target="_blank"
             rel="noreferrer"
             className="w-full sm:w-auto"
